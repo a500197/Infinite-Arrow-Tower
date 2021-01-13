@@ -9,16 +9,23 @@
 <body>
 
     <div id="app">
-        <button @click="test1">存入</button>
-        <button @click="test2">讀取</button>
-        <button @click="test3">增加</button>
-        {{test}}
+        <div id="StatusBar" v-show="state>0">
+            金錢:{{Money}} 目前關卡:{{Level}}<button @click="Save">存檔</button><br>
+            <button @click="UpAtkPlus">升級弓箭(目前價格:{{AtkPlus*10}})</button><br>
+            <button @click="UpAtkTechnology">升級弓(目前價格:{{AtkTechnology*100}})</button><br>
+            <button @click="UpQuantity">建造箭塔(目前價格:{{Quantity*1000}})</button><br>
+            當前關卡:{{Level}} 怪物剩餘血量:{{MonsterLife}}
+        </div>
+        <div v-show="state==0">
+            <button @click="Start">開始遊戲</button>
+            <button @click="Load">讀取</button>
+        </div>
     </div>
 
     <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.9/vue.js'></script>
     <script>
         function SetCookie(name, value) {
-            console.log(name+value)
+            console.log(name + value)
             let Days = 30; //此 cookie 將被儲存 30 天
             let exp = new Date(); //new Date("December 31, 9998");
             exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
@@ -26,37 +33,99 @@
             console.log(name + "=" + escape(value) + ";expires=true," + exp.toGMTString())
         }
 
-        function SetCookie2(name, value) {
-            document.cookie = name + '=' + encodeURIComponent(value);
-        }
-
         function getCookie(name) {
             var arr = document.cookie.match(new RegExp("(^| )" + name + "=([^;]*)(;|$)"));
             if (arr != null) return unescape(arr[2]);
             return null;
         }
+
         let vm = new Vue({
             el: app,
             data: {
-                test: 0,
+                state: 0,
+                Money: 0,
+                Atk: 0,
+                AtkPlus: 1,
+                AtkTechnology: 1,
+                AtkSpeed: 10,
+                ASPlus: 0,
+                Level: 1,
+                Quantity: 1,
+                MonsterLife: 100
+
             },
             methods: {
-                test1() {
-                    console.log(this.test)
-                    SetCookie("test", this.test)
-                    // SetCookie2("test", this.test)
-                    // document.cookie = "test"+'=' + encodeURIComponent(this.test);
+                Save() {
+                    SetCookie("Money", this.Money)
+                    SetCookie("AtkPlus", this.AtkPlus)
+                    SetCookie("AtkTechnology", this.AtkTechnology)
+                    SetCookie("ASPlus", this.ASPlus)
+                    SetCookie("Level", this.Level)
+                    SetCookie("Quantity", this.Quantity)
                 },
-                test2() {
-                    let temp = getCookie("test")
-                    console.log(temp)
-                    this.test = temp
+                Load() {
+                    this.Money = getCookie("Money")
+                    this.AtkPlus = getCookie("AtkPlus")
+                    this.AtkTechnology = getCookie("AtkTechnology")
+                    this.ASPlus = getCookie("ASPlus")
+                    this.Level = getCookie("Level")
+                    this.Quantity = getCookie("Quantity")
                 },
-                test3() {
-                    this.test += 1
+                Start() {
+                    this.state += 1
+                    this.EveryRound()
+                    window.setInterval(() => {
+                        setTimeout(() => {
+                            this.RoundDo()
+                        }, 0)
+                    }, 1000*this.AtkSpeed)
+                },
+                EveryRound() {
+                    this.MonsterLife = 100 * this.Level
+
+                },
+                RoundDo() {
+                    this.MonsterLife = this.MonsterLife - ((this.Atk + this.AtkPlus) * (1+this.AtkTechnology)) *
+                        this.Quantity
+                    if (this.MonsterLife <= 0) {
+                        this.Money += this.Level * 10
+                        this.Level += 1
+                        this.EveryRound()
+
+                    }
+                },
+                UpAtkPlus(){
+                    if(this.Money >= this.AtkPlus*10)
+                    {
+                        this.Money=this.Money-this.AtkPlus*10
+                        this.AtkPlus+=1
+                    }
+                    else{
+                        alert("你的金錢不足")
+                    }
+                },
+                UpAtkTechnology(){
+                    if(this.Money >= this.AtkTechnology*100)
+                    {
+                        this.Money=this.Money-this.AtkTechnology*100
+                        this.AtkTechnology+=1
+                    }
+                    else{
+                        alert("你的金錢不足")
+                    }
+                },
+                UpQuantity(){
+                    if(this.Money >= this.Quantity*1000)
+                    {
+                        this.Money=this.Money-this.Quantity*1000
+                        this.Quantity+=1
+                    }
+                    else{
+                        alert("你的金錢不足")
+                    }
                 },
                 
-                
+
             },
         })
     </script>

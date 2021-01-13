@@ -18,7 +18,7 @@
         </div>
         <div v-show="state==0">
             <button @click="Start">開始遊戲</button>
-            <button @click="Load">讀取(紀錄僅保存30日)</button>
+            <button @click="Load" v-if="PlayExperience>0">讀取(紀錄僅保存30日)</button>
         </div>
     </div>
 
@@ -38,7 +38,9 @@
             if (arr != null) return unescape(arr[2]);
             return null;
         }
-
+        $(function () {
+            vm.PlayExperience=getCookie("PlayExperience")
+        })
         let vm = new Vue({
             el: app,
             data: {
@@ -51,8 +53,8 @@
                 ASPlus: 0,
                 Level: 1,
                 Quantity: 1,
-                MonsterLife: 100
-
+                MonsterLife: 100,
+                PlayExperience:0,
             },
             methods: {
                 Save() {
@@ -62,6 +64,7 @@
                     SetCookie("ASPlus", this.ASPlus)
                     SetCookie("Level", this.Level)
                     SetCookie("Quantity", this.Quantity)
+                    SetCookie("PlayExperience", this.PlayExperience)
                 },
                 Load() {
                     this.Money = getCookie("Money")

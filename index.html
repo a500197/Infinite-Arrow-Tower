@@ -14,11 +14,11 @@
             <button @click="UpAtkPlus">升級弓箭(目前價格:{{AtkPlus*10}})</button><br>
             <button @click="UpAtkTechnology">升級弓(目前價格:{{AtkTechnology*100}})</button><br>
             <button @click="UpQuantity">建造箭塔(目前價格:{{Quantity*1000}})</button><br>
-            當前關卡:{{Level}} 怪物剩餘血量:{{MonsterLife}}
+            怪物剩餘血量:{{MonsterLife}}
         </div>
         <div v-show="state==0">
             <button @click="Start">開始遊戲</button>
-            <button @click="Load">讀取</button>
+            <button @click="Load">讀取(紀錄僅保存30日)</button>
         </div>
     </div>
 

@@ -11,9 +11,12 @@
     <div id="app">
         <div id="StatusBar" v-show="state>0">
             金錢:{{Money}} 目前關卡:{{Level}}<button @click="Save">存檔</button><br>
-            <button @click="UpAtkPlus">升級弓箭(目前價格:{{AtkPlus*10}})</button><br>
-            <button @click="UpAtkTechnology">升級弓(目前價格:{{AtkTechnology*100}})</button><br>
+            <button @click="UpAtkPlus">升級弓箭(目前價格:{{(AtkPlus+1)*10}})</button><br>
+            <button @click="UpAtkTechnology">升級弓(目前價格:{{(AtkTechnology+1)*100}})</button><br>
             <button @click="UpQuantity">建造箭塔(目前價格:{{Quantity*1000}})</button><br>
+            <button @click="UpASPlus" v-if="ASPlus<9">訓練上彈速度(目前價格:{{(((ASPlus*ASPlus)+1)/2)*1000}})</button>
+            <p v-else>訓練上彈速度(已達上限)</p>
+            <br>
             怪物剩餘血量:{{MonsterLife}}
         </div>
         <div v-show="state==0">
@@ -44,15 +47,16 @@
             data: {
                 state: 0,
                 Money: 0,
-                Atk: 0,
-                AtkPlus: 1,
-                AtkTechnology: 1,
+                Atk: 1,
+                AtkPlus: 0,
+                AtkTechnology: 0,
                 AtkSpeed: 10,
                 ASPlus: 0,
                 Level: 1,
                 Quantity: 1,
                 MonsterLife: 100,
                 PlayExperience:0,
+                TimeName:0,
             },
             methods: {
                 Save() {
@@ -75,18 +79,23 @@
                 Start() {
                     this.state += 1
                     this.EveryRound()
-                    window.setInterval(() => {
+                    this.TimeSet()
+                },
+                TimeSet(){
+                    window.clearInterval(this.TimeName)
+                    let a=window.setInterval(() => {
                         setTimeout(() => {
                             this.RoundDo()
                         }, 0)
-                    }, 1000*this.AtkSpeed)
+                    }, 1000*(this.AtkSpeed-this.ASPlus))
+                    this.TimeName=a
                 },
                 EveryRound() {
                     this.MonsterLife = 100 * this.Level
 
                 },
                 RoundDo() {
-                    this.MonsterLife = this.MonsterLife - ((this.Atk + this.AtkPlus) * (1+this.AtkTechnology)) *
+                    this.MonsterLife = this.MonsterLife - ((this.Atk + this.AtkPlus*0.75) * (1+this.AtkTechnology)) *
                         this.Quantity
                     if (this.MonsterLife <= 0) {
                         this.Money += this.Level * 10
@@ -96,9 +105,9 @@
                     }
                 },
                 UpAtkPlus(){
-                    if(this.Money >= this.AtkPlus*10)
+                    if(this.Money >= (this.AtkPlus+1)*10)
                     {
-                        this.Money=this.Money-this.AtkPlus*10
+                        this.Money=this.Money-(this.AtkPlus+1)*10
                         this.AtkPlus+=1
                     }
                     else{
@@ -106,9 +115,9 @@
                     }
                 },
                 UpAtkTechnology(){
-                    if(this.Money >= this.AtkTechnology*100)
+                    if(this.Money >= (this.AtkTechnology+1)*100)
                     {
-                        this.Money=this.Money-this.AtkTechnology*100
+                        this.Money=this.Money-(this.AtkTechnology+1)*100
                         this.AtkTechnology+=1
                     }
                     else{
@@ -120,6 +129,18 @@
                     {
                         this.Money=this.Money-this.Quantity*1000
                         this.Quantity+=1
+                    }
+                    else{
+                        alert("你的金錢不足")
+                    }
+                },
+                UpASPlus(){
+                    let ASPlus=this.ASPlus
+                    if(this.Money >= (((ASPlus*ASPlus)+1)/2)*1000)
+                    {
+                        this.Money=this.Money-(((ASPlus*ASPlus)+1)/2)*1000
+                        this.ASPlus+=1
+                        this.TimeSet()
                     }
                     else{
                         alert("你的金錢不足")

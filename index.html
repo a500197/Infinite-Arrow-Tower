@@ -6,9 +6,9 @@
     <title>Infinite Arrow Tower</title>
 </header>
 
-<body>
-
+<body>    
     <div id="app">
+        網頁文字遊戲-無限箭塔-ver:{{ver}}
         <div id="StatusBar" v-show="state>0">
             金錢:{{Money}} 目前關卡:{{Level}}<button @click="Save">存檔</button><br>
             <button @click="UpAtkPlus">升級弓箭(目前價格:{{(AtkPlus+1)*10}})</button><br>
@@ -59,6 +59,7 @@
                 MonsterLife: 10,
                 PlayExperience:0,
                 TimeName:0,
+                ver:"1.0",
             },
             methods: {
                 Save() {
@@ -71,12 +72,12 @@
                     SetCookie("PlayExperience", 1)
                 },
                 Load() {
-                    this.Money = int(getCookie("Money"))
-                    this.AtkPlus = int(getCookie("AtkPlus"))
-                    this.AtkTechnology = int(getCookie("AtkTechnology"))
-                    this.ASPlus = int(getCookie("ASPlus"))
-                    this.Level = int(getCookie("Level"))
-                    this.Quantity = int(getCookie("Quantity"))
+                    this.Money = Number(getCookie("Money"))
+                    this.AtkPlus = Number(getCookie("AtkPlus"))
+                    this.AtkTechnology = Number(getCookie("AtkTechnology"))
+                    this.ASPlus = Number(getCookie("ASPlus"))
+                    this.Level = Number(getCookie("Level"))
+                    this.Quantity = Number(getCookie("Quantity"))
                 },
                 Start() {
                     this.state += 1

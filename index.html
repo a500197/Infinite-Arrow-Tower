@@ -71,12 +71,12 @@
                     SetCookie("PlayExperience", 1)
                 },
                 Load() {
-                    this.Money = getCookie("Money")
-                    this.AtkPlus = getCookie("AtkPlus")
-                    this.AtkTechnology = getCookie("AtkTechnology")
-                    this.ASPlus = getCookie("ASPlus")
-                    this.Level = getCookie("Level")
-                    this.Quantity = getCookie("Quantity")
+                    this.Money = int(getCookie("Money"))
+                    this.AtkPlus = int(getCookie("AtkPlus"))
+                    this.AtkTechnology = int(getCookie("AtkTechnology"))
+                    this.ASPlus = int(getCookie("ASPlus"))
+                    this.Level = int(getCookie("Level"))
+                    this.Quantity = int(getCookie("Quantity"))
                 },
                 Start() {
                     this.state += 1

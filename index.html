@@ -11,9 +11,10 @@
         網頁文字遊戲-無限箭塔-ver:{{ver}}
         <div id="StatusBar" v-show="state>0">
             金錢:{{Money}} 目前關卡:{{Level}}<button @click="Save">存檔</button><br>
-            <button @click="UpAtkPlus">升級弓箭(目前價格:{{(AtkPlus+1)*10}})</button><br>
+            <button @click="UpAtkPlus">升級箭(目前價格:{{(AtkPlus+1)*10}})</button><br>
             <button @click="UpAtkTechnology">升級弓(目前價格:{{(AtkTechnology+1)*100}})</button><br>
             <button @click="UpQuantity">建造箭塔(目前價格:{{Quantity*1000}})</button><br>
+            目前上彈速度:{{AtkSpeed-ASPlus}}s/發<br>
             <button @click="UpASPlus" v-if="ASPlus<9">訓練上彈速度(目前價格:{{(((ASPlus*ASPlus)+1)/2)*1000}})</button>
             <p v-else>訓練上彈速度(已達上限)</p>
             <br>
@@ -48,7 +49,7 @@
             el: app,
             data: {
                 state: 0,
-                Money: 0,
+                Money: 150,
                 Atk: 1,
                 AtkPlus: 0,
                 AtkTechnology: 0,
@@ -59,7 +60,7 @@
                 MonsterLife: 10,
                 PlayExperience:0,
                 TimeName:0,
-                ver:"1.0",
+                ver:"1.1",
             },
             methods: {
                 Save() {
@@ -78,6 +79,7 @@
                     this.ASPlus = Number(getCookie("ASPlus"))
                     this.Level = Number(getCookie("Level"))
                     this.Quantity = Number(getCookie("Quantity"))
+                    this.Start()
                 },
                 Start() {
                     this.state += 1
@@ -95,10 +97,14 @@
                 },
                 EveryRound() {
                     let life=0
-                    if (this.Level>10){
-                        life+=100 * this.Level/10
+                    let Level=this.Level
+                    if (Level>100){
+                        life+=3000 * (Level-Level%100)/100
                     }
-                    life+=10 * this.Level
+                    if (Level>10){
+                        life+=200 * (Level-Level%10)/10
+                    }
+                    life+=10 * Level
                     this.MonsterLife = life
 
                 },

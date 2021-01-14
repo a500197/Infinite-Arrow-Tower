@@ -14,8 +14,8 @@
             <button @click="UpAtkPlus">升級箭(目前價格:{{(AtkPlus+1)*10}})</button><br>
             <button @click="UpAtkTechnology">升級弓(目前價格:{{(AtkTechnology+1)*100}})</button><br>
             <button @click="UpQuantity">建造箭塔(目前價格:{{Quantity*1000}})</button><br>
-            目前上彈速度:{{AtkSpeed-ASPlus}}s/發<br>
-            <button @click="UpASPlus" v-if="ASPlus<9">訓練上彈速度(目前價格:{{(((ASPlus*ASPlus)+1)/2)*1000}})</button>
+            目前上彈速度:{{AtkSpeed-ASPlus}}s/發
+            <button @click="UpASPlus" v-if="ASPlus<9">訓練上彈速度(目前價格:{{ASPlus*ASPlus*ASPlus*ASPlus*ASPlus+(((ASPlus*ASPlus)+1)/2)*1000}})</button>
             <p v-else>訓練上彈速度(已達上限)</p>
             <br>
             當前傷害:{{(((Atk + AtkPlus*0.75) * (1+AtkTechnology)) *Quantity)/(AtkSpeed-ASPlus)}}/s
@@ -150,9 +150,9 @@
                 },
                 UpASPlus(){
                     let ASPlus=this.ASPlus
-                    if(this.Money >= (((ASPlus*ASPlus)+1)/2)*1000)
+                    if(this.Money >= ASPlus*ASPlus*ASPlus*ASPlus*ASPlus+(((ASPlus*ASPlus)+1)/2)*1000)
                     {
-                        this.Money=this.Money-(((ASPlus*ASPlus)+1)/2)*1000
+                        this.Money=this.Money-(ASPlus*ASPlus*ASPlus*ASPlus*ASPlus+(((ASPlus*ASPlus)+1)/2)*1000)
                         this.ASPlus+=1
                         this.TimeSet()
                     }

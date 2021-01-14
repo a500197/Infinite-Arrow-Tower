@@ -13,7 +13,7 @@
             金錢:{{Money}} 目前關卡:{{Level}}<button @click="Save">存檔</button><br>
             <button @click="UpAtkPlus">升級箭(目前價格:{{(AtkPlus+1)*10}})</button><br>
             <button @click="UpAtkTechnology">升級弓(目前價格:{{(AtkTechnology+1)*100}})</button><br>
-            <button @click="UpQuantity">建造箭塔(目前價格:{{Quantity*1000}})</button><br>
+            目前箭塔擁有數:{{Quantity}}座<button @click="UpQuantity">建造箭塔(目前價格:{{Quantity*1000}})</button><br>
             目前上彈速度:{{AtkSpeed-ASPlus}}s/發
             <button @click="UpASPlus" v-if="ASPlus<9">訓練上彈速度(目前價格:{{ASPlus*ASPlus*ASPlus*ASPlus*ASPlus+(((ASPlus*ASPlus)+1)/2)*998+1}})</button>
             <p v-else>訓練上彈速度(已達上限)</p>

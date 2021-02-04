@@ -6,7 +6,7 @@
     <title>Infinite Arrow Tower</title>
 </header>
 
-<body>    
+<body>
     <div id="app">
         網頁文字遊戲-無限箭塔-ver:{{ver}}
         <div id="StatusBar" v-show="state>0">
@@ -15,7 +15,8 @@
             <button @click="UpAtkTechnology">升級弓(目前價格:{{(AtkTechnology+1)*100}})</button><br>
             目前箭塔擁有數:{{Quantity}}座<button @click="UpQuantity">建造箭塔(目前價格:{{Quantity*1000}})</button><br>
             目前上彈速度:{{AtkSpeed-ASPlus}}s/發
-            <button @click="UpASPlus" v-if="ASPlus<9">訓練上彈速度(目前價格:{{ASPlus*ASPlus*ASPlus*ASPlus*ASPlus+(((ASPlus*ASPlus)+1)/2)*998+1}})</button>
+            <button @click="UpASPlus"
+                v-if="ASPlus<9">訓練上彈速度(目前價格:{{ASPlus*ASPlus*ASPlus*ASPlus*ASPlus+(((ASPlus*ASPlus)+1)/2)*998+1}})</button>
             <p v-else>訓練上彈速度(已達上限)</p>
             <br>
             當前傷害:{{(((Atk + AtkPlus*0.75) * (1+AtkTechnology)) *Quantity)/(AtkSpeed-ASPlus)}}/s
@@ -44,7 +45,7 @@
             if (arr != null) return unescape(arr[2]);
             return null;
         }
-        
+
         let vm = new Vue({
             el: app,
             data: {
@@ -58,27 +59,35 @@
                 Level: 1,
                 Quantity: 1,
                 MonsterLife: 10,
-                PlayExperience:0,
-                TimeName:0,
-                ver:"1.1",
+                PlayExperience: 0,
+                TimeName: 0,
+                ver: "1.2",
             },
             methods: {
                 Save() {
-                    SetCookie("Money", this.Money)
-                    SetCookie("AtkPlus", this.AtkPlus)
-                    SetCookie("AtkTechnology", this.AtkTechnology)
-                    SetCookie("ASPlus", this.ASPlus)
-                    SetCookie("Level", this.Level)
-                    SetCookie("Quantity", this.Quantity)
+                    let temp = {
+                        "Money": this.Money,
+                        "AtkPlus": this.AtkPlus,
+                        "AtkTechnology": this.AtkTechnology,
+                        "ASPlus": this.ASPlus,
+                        "Level": this.Level,
+                        "Quantity": this.Quantity,
+                    }
+                    let JTemp = JSON.stringify(temp) // 序列化成 JSON 字串
+                    SetCookie("Save", JTemp)
                     SetCookie("PlayExperience", 1)
+                    alert("已存檔")
                 },
                 Load() {
-                    this.Money = Number(getCookie("Money"))
-                    this.AtkPlus = Number(getCookie("AtkPlus"))
-                    this.AtkTechnology = Number(getCookie("AtkTechnology"))
-                    this.ASPlus = Number(getCookie("ASPlus"))
-                    this.Level = Number(getCookie("Level"))
-                    this.Quantity = Number(getCookie("Quantity"))
+                    let temp =JSON.parse(getCookie("Save"))
+                    console.log(temp)
+                    console.log(typeof( temp.Money))
+                    this.Money = temp.Money
+                    this.AtkPlus = temp.AtkPlus
+                    this.AtkTechnology =temp.AtkTechnology
+                    this.ASPlus = temp.ASPlus
+                    this.Level = temp.Level
+                    this.Quantity = temp.Quantity
                     this.Start()
                 },
                 Start() {
@@ -86,30 +95,31 @@
                     this.EveryRound()
                     this.TimeSet()
                 },
-                TimeSet(){
+                TimeSet() {
                     window.clearInterval(this.TimeName)
-                    let a=window.setInterval(() => {
+                    let a = window.setInterval(() => {
                         setTimeout(() => {
                             this.RoundDo()
                         }, 0)
-                    }, 1000*(this.AtkSpeed-this.ASPlus))
-                    this.TimeName=a
+                    }, 1000 * (this.AtkSpeed - this.ASPlus))
+                    this.TimeName = a
                 },
                 EveryRound() {
-                    let life=0
-                    let Level=this.Level
-                    if (Level>100){
-                        life+=3000 * (Level-Level%100)/100
+                    let life = 0
+                    let Level = this.Level
+                    if (Level > 100) {
+                        life += 3000 * (Level - Level % 100) / 100
                     }
-                    if (Level>10){
-                        life+=200 * (Level-Level%10)/10
+                    if (Level > 10) {
+                        life += 200 * (Level - Level % 10) / 10
                     }
-                    life+=10 * Level
+                    life += 10 * Level
                     this.MonsterLife = life
 
                 },
                 RoundDo() {
-                    this.MonsterLife = this.MonsterLife - ((this.Atk + this.AtkPlus*0.75) * (1+this.AtkTechnology)) *
+                    this.MonsterLife = this.MonsterLife - ((this.Atk + this.AtkPlus * 0.75) * (1 + this
+                            .AtkTechnology)) *
                         this.Quantity
                     if (this.MonsterLife <= 0) {
                         this.Money += this.Level * 10
@@ -118,60 +128,50 @@
 
                     }
                 },
-                UpAtkPlus(){
-                    if(this.Money >= (this.AtkPlus+1)*10)
-                    {
-                        this.Money=this.Money-(this.AtkPlus+1)*10
-                        this.AtkPlus+=1
-                    }
-                    else{
+                UpAtkPlus() {
+                    if (this.Money >= (this.AtkPlus + 1) * 10) {
+                        this.Money = this.Money - (this.AtkPlus + 1) * 10
+                        this.AtkPlus += 1
+                    } else {
                         alert("你的金錢不足")
                     }
                 },
-                UpAtkTechnology(){
-                    if(this.Money >= (this.AtkTechnology+1)*100)
-                    {
-                        this.Money=this.Money-(this.AtkTechnology+1)*100
-                        this.AtkTechnology+=1
-                    }
-                    else{
+                UpAtkTechnology() {
+                    if (this.Money >= (this.AtkTechnology + 1) * 100) {
+                        this.Money = this.Money - (this.AtkTechnology + 1) * 100
+                        this.AtkTechnology += 1
+                    } else {
                         alert("你的金錢不足")
                     }
                 },
-                UpQuantity(){
-                    if(this.Money >= this.Quantity*1000)
-                    {
-                        this.Money=this.Money-this.Quantity*1000
-                        this.Quantity+=1
-                    }
-                    else{
+                UpQuantity() {
+                    if (this.Money >= this.Quantity * 1000) {
+                        this.Money = this.Money - this.Quantity * 1000
+                        this.Quantity += 1
+                    } else {
                         alert("你的金錢不足")
                     }
                 },
-                UpASPlus(){
-                    let ASPlus=this.ASPlus
-                    let ASPCost=ASPlus*ASPlus*ASPlus*ASPlus*ASPlus+(((ASPlus*ASPlus)+1)/2)*998+1
-                    if(this.Money >= ASPCost)
-                    {
-                        this.Money=this.Money-ASPCost
-                        this.ASPlus+=1
+                UpASPlus() {
+                    let ASPlus = this.ASPlus
+                    let ASPCost = ASPlus * ASPlus * ASPlus * ASPlus * ASPlus + (((ASPlus * ASPlus) + 1) / 2) *
+                        998 + 1
+                    if (this.Money >= ASPCost) {
+                        this.Money = this.Money - ASPCost
+                        this.ASPlus += 1
                         this.TimeSet()
-                    }
-                    else{
+                    } else {
                         alert("你的金錢不足")
                     }
                 },
-                PlayExperienceC(){
-                    if(getCookie("PlayExperience")!=null)
-                    {
+                PlayExperienceC() {
+                    if (getCookie("PlayExperience") != null) {
                         // console.log("有")
                         return true
                     }
                     // console.log("無")
                     return false
-                }
-                
-
+                },
             },
         })
         // (function () {

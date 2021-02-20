@@ -16,10 +16,10 @@
             目前箭塔擁有數:{{Quantity}}座<button @click="UpQuantity">建造箭塔(目前價格:{{Quantity*1000}})</button><br>
             目前上彈速度:{{AtkSpeed-ASPlus}}s/發
             <button @click="UpASPlus"
-                v-if="ASPlus<9">訓練上彈速度(目前價格:{{ASPlus*ASPlus*ASPlus*ASPlus*ASPlus+(((ASPlus*ASPlus)+1)/2)*998+1}})</button>
+                v-if="ASPlus<9">訓練上彈速度(目前價格:{{AttackSpeedPrice}})</button>
             <p v-else>訓練上彈速度(已達上限)</p>
             <br>
-            當前傷害:{{(((Atk + AtkPlus*0.75) * (1+AtkTechnology)) *Quantity)/(AtkSpeed-ASPlus)}}/s
+            當前傷害:{{DamagePerSecond}}/s
             <br>
             怪物剩餘血量:{{MonsterLife}}
         </div>
@@ -63,6 +63,23 @@
                 TimeName: 0,
                 ver: "1.2",
             },
+            computed: {
+                DamagePerSecond: function () {
+                    let temp = (((this.Atk + this.AtkPlus * 0.75) * (1 + this.AtkTechnology)) * this
+                        .Quantity) / (this.AtkSpeed - this.ASPlus)
+                    return temp.toFixed(2)
+                },
+                AttackSpeedPrice: function () {
+                    let ASPlus = this.ASPlus
+                    let temp = ASPlus * ASPlus * ASPlus * ASPlus * ASPlus + (((ASPlus * ASPlus) + 1) / 2) *
+                        998 + 1
+                    let remainder = temp % 100
+                    if (remainder == 0) {
+                        return temp
+                    }
+                    return temp - remainder + 100
+                },
+            },
             methods: {
                 Save() {
                     let temp = {
@@ -79,12 +96,12 @@
                     alert("已存檔")
                 },
                 Load() {
-                    let temp =JSON.parse(getCookie("Save"))
+                    let temp = JSON.parse(getCookie("Save"))
                     console.log(temp)
-                    console.log(typeof( temp.Money))
+                    console.log(typeof (temp.Money))
                     this.Money = temp.Money
                     this.AtkPlus = temp.AtkPlus
-                    this.AtkTechnology =temp.AtkTechnology
+                    this.AtkTechnology = temp.AtkTechnology
                     this.ASPlus = temp.ASPlus
                     this.Level = temp.Level
                     this.Quantity = temp.Quantity
@@ -152,8 +169,7 @@
                 },
                 UpASPlus() {
                     let ASPlus = this.ASPlus
-                    let ASPCost = ASPlus * ASPlus * ASPlus * ASPlus * ASPlus + (((ASPlus * ASPlus) + 1) / 2) *
-                        998 + 1
+                    let ASPCost = this.AttackSpeedPrice
                     if (this.Money >= ASPCost) {
                         this.Money = this.Money - ASPCost
                         this.ASPlus += 1

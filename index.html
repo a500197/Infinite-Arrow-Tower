@@ -25,7 +25,7 @@
         </div>
         <div v-show="state==0">
             <button @click="Start">開始遊戲</button>
-            <button @click="Load" v-if="PlayExperienceC()">讀取(紀錄僅保存30日)</button>
+            <button @click="Load" v-if="PlayExperienceC()">讀取(紀錄保存30日)</button>
         </div>
     </div>
 
@@ -61,7 +61,7 @@
                 MonsterLife: 10,
                 PlayExperience: 0,
                 TimeName: 0,
-                ver: "1.2",
+                ver: "1.2.1",
             },
             computed: {
                 DamagePerSecond: function () {
